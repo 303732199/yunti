@@ -23,7 +23,7 @@ const basicConfigRouter = {
       component: () => import('@/views/table/drag-table'),
       name: 'config_others',
       meta: { title: '其他设置' }
-    },
+    }
   ]
 }
 export default basicConfigRouter

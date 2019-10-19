@@ -23,7 +23,7 @@ const resourceRouter = {
       component: () => import('@/views/table/drag-table'),
       name: 'message',
       meta: { title: '短信资源' }
-    },
+    }
   ]
 }
 export default resourceRouter
