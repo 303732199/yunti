@@ -16,13 +16,13 @@ const basicConfigRouter = {
       path: 'site',
       component: () => import('@/views/table/dynamic-table/index'),
       name: 'config_site',
-      meta: { title: '网站设置' }
+      meta: { title: '网站' }
     },
     {
       path: 'others',
       component: () => import('@/views/table/drag-table'),
       name: 'config_others',
-      meta: { title: '其他设置' }
+      meta: { title: '其他' }
     }
   ]
 }

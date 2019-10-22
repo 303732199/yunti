@@ -16,13 +16,13 @@ const resourceRouter = {
       path: 'video',
       component: () => import('@/views/table/dynamic-table/index'),
       name: 'video',
-      meta: { title: '视频资源' }
+      meta: { title: '视频' }
     },
     {
       path: 'message',
       component: () => import('@/views/table/drag-table'),
       name: 'message',
-      meta: { title: '短信资源' }
+      meta: { title: '短信' }
     }
   ]
 }

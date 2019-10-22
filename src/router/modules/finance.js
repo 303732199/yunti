@@ -22,7 +22,7 @@ const financeRouter = {
       path: 'invoice',
       component: () => import('@/views/table/dynamic-table/index'),
       name: 'invoice',
-      meta: { title: '发票管理' }
+      meta: { title: '发票' }
     }
   ]
 }

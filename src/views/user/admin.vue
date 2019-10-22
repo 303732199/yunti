@@ -1,5 +1,27 @@
 <template>
   <div class="app-container">
+    <el-form size="small" inline>
+      <el-form-item label="角色">
+        <el-select size="small" v-model="listQuery.difficult" placeholder="请选择">
+          <el-option
+            v-for="item in roles"
+            :key="item.id"
+            :label="item.title"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="姓名">
+        <el-select size="small" v-model="listQuery.type" placeholder="请选择">
+          <el-option
+            v-for="item in types"
+            :key="item.value"
+            :label="item.label"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+    </el-form>
     <div style="padding: 10px 0; text-align: right">
       <el-button type="primary" size="mini" icon="el-icon-plus">添加</el-button>
       <el-button type="plain" size="mini" icon="el-icon-delete">批量删除</el-button>
@@ -10,28 +32,31 @@
           <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="难度名称">
-        <template slot-scope="{row}">
-          <template v-if="row.edit">
-            <el-input v-model="row.title" class="edit-input" size="small"/>
-            <el-button
-              class="cancel-btn"
-              size="mini"
-              type="warning"
-              @click="cancelEdit(row)"
-            >
-              取消
-            </el-button>
-          </template>
-          <span v-else>{{ row.title }}</span>
+
+      <el-table-column align="center" prop="truename" label="姓名">
+      </el-table-column>
+
+      <el-table-column align="center" prop="username" label="账号">
+      </el-table-column>
+
+      <el-table-column  align="center" prop="role_name" label="角色">
+      </el-table-column>
+
+      <el-table-column width="180px" align="center" label="创建时间">
+        <template slot-scope="scope">
+          <span>{{ scope.row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
+
+      <el-table-column class-name="status-col" prop="add_user" label="添加人员" width="110">
+      </el-table-column>
+
       <el-table-column align="center" label="操作" width="120">
         <template slot-scope="{row}">
           <el-button
             size="mini"
             type="text"
-            @click="row.edit=!row.edit"
+            @click=""
           >
               编辑
             </el-button>
@@ -49,15 +74,25 @@
 </template>
 
 <script>
-import { fetchList, del } from '@/api/difficult'
+import { fetchList } from '@/api/member'
 
 export default {
+  name: 'InlineEditTable',
   data() {
     return {
       // 难度
+      roles: [
+        { id: 1, title: '超级管理员' },
+        { id: 2, title: '题库管理员' },
+        { id: 3, title: '文章管理员' }
+      ],
       list: null,
       listLoading: true,
-      listQuery: {}
+      listQuery: {
+        role: '',
+        page: 1,
+        limit: 10
+      }
     }
   },
   created() {
@@ -70,7 +105,7 @@ export default {
       const items = data.items
       this.list = items.map(v => {
         this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
-        v.originalTitle = v.title //  will be used when user click the cancel button
+        v.originalTitle = v.title //  will be used when user click the cancel botton
         return v
       })
       this.listLoading = false
@@ -78,26 +113,18 @@ export default {
     cancelEdit(row) {
       row.title = row.originalTitle
       row.edit = false
+      this.$message({
+        message: 'The title has been restored to the original value',
+        type: 'warning'
+      })
     },
     confirmEdit(row) {
       row.edit = false
       row.originalTitle = row.title
       this.$message({
-        message: '更新成功',
+        message: 'The title has been edited',
         type: 'success'
       })
-    },
-    async deleteRow(row) {
-      const response = await del(row.id)
-      if (!response.error_code) {
-        this.list = this.list.filter((record) => {
-          return record.id !== row.id
-        })
-        this.$message({
-          message: '删除成功',
-          type: 'success'
-        })
-      }
     }
   }
 }

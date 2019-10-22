@@ -1,19 +1,31 @@
 <template>
   <div class="app-container">
     <div style="padding: 10px 0; text-align: right">
-      <el-button type="primary" size="mini" icon="el-icon-plus">添加</el-button>
+      <el-button type="primary" size="mini" icon="el-icon-plus">添加角色</el-button>
       <el-button type="plain" size="mini" icon="el-icon-delete">批量删除</el-button>
     </div>
     <el-table v-loading="listLoading" size="small" :data="list" border fit highlight-current-row style="width: 100%">
-      <el-table-column align="center" label="ID" width="80">
-        <template slot-scope="scope">
-          <span>{{ scope.row.id }}</span>
-        </template>
+      <el-table-column type="expand" label="展开">
+         <template slot-scope="{row}">
+          <div>权限列表：
+            <el-tag
+              style="margin: 5px 5px 5px 0"
+              v-for="route in row.routes"
+              :key="route.path"
+              size="mini"
+              closable
+            >
+            {{route.path}}
+          </el-tag>
+          </div>
+      </template>
       </el-table-column>
-      <el-table-column align="center" label="难度名称">
+      <el-table-column align="center" label="ID" width="80" type="index">
+      </el-table-column>
+      <el-table-column label="角色名称" width="120px">
         <template slot-scope="{row}">
           <template v-if="row.edit">
-            <el-input v-model="row.title" class="edit-input" size="small"/>
+            <el-input v-model="row.name" class="edit-input" size="small"/>
             <el-button
               class="cancel-btn"
               size="mini"
@@ -23,8 +35,10 @@
               取消
             </el-button>
           </template>
-          <span v-else>{{ row.title }}</span>
+          <span v-else>{{ row.name }}</span>
         </template>
+      </el-table-column>
+       <el-table-column align="center" label="角色描述" prop="description">
       </el-table-column>
       <el-table-column align="center" label="操作" width="120">
         <template slot-scope="{row}">
@@ -49,15 +63,18 @@
 </template>
 
 <script>
-import { fetchList, del } from '@/api/difficult'
+import { getRoles } from '@/api/role'
 
 export default {
+  name: 'InlineEditTable',
   data() {
     return {
-      // 难度
       list: null,
       listLoading: true,
-      listQuery: {}
+      listQuery: {
+        page: 1,
+        limit: 10
+      }
     }
   },
   created() {
@@ -66,38 +83,29 @@ export default {
   methods: {
     async getList() {
       this.listLoading = true
-      const { data } = await fetchList(this.listQuery)
-      const items = data.items
-      this.list = items.map(v => {
+      const { data } = await getRoles()
+      this.list = data.map(v => {
         this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
-        v.originalTitle = v.title //  will be used when user click the cancel button
+        v.originalTitle = v.name //  will be used when user click the cancel botton
         return v
       })
       this.listLoading = false
     },
     cancelEdit(row) {
-      row.title = row.originalTitle
+      row.name = row.originalTitle
       row.edit = false
+      this.$message({
+        message: 'The title has been restored to the original value',
+        type: 'warning'
+      })
     },
     confirmEdit(row) {
       row.edit = false
-      row.originalTitle = row.title
+      row.originalTitle = row.name
       this.$message({
-        message: '更新成功',
+        message: 'The title has been edited',
         type: 'success'
       })
-    },
-    async deleteRow(row) {
-      const response = await del(row.id)
-      if (!response.error_code) {
-        this.list = this.list.filter((record) => {
-          return record.id !== row.id
-        })
-        this.$message({
-          message: '删除成功',
-          type: 'success'
-        })
-      }
     }
   }
 }

@@ -5,30 +5,28 @@ import Layout from '@/layout'
 const customerRouter = {
   path: '/user',
   component: Layout,
-  redirect: '/table/complex-table',
-  name: 'user',
   meta: {
     title: '用户管理',
     icon: 'table'
   },
   children: [
     {
+      path: 'role',
+      component: () => import('@/views/user/role'),
+      name: 'admin_role',
+      meta: { title: '角色' }
+    },
+    {
       path: 'admin',
-      component: () => import('@/views/table/dynamic-table/index'),
-      name: 'user_admin',
-      meta: { title: '管理员管理' }
+      component: () => import('@/views/user/admin'),
+      name: 'admin_list',
+      meta: { title: '管理员' }
     },
     {
       path: 'member',
-      component: () => import('@/views/table/drag-table'),
-      name: 'user_member',
-      meta: { title: '会员管理' }
-    },
-    {
-      path: 'complex-table',
-      component: () => import('@/views/table/complex-table'),
-      name: 'ComplexTable',
-      meta: { title: 'Complex Table' }
+      component: () => import('@/views/user/members'),
+      name: 'member',
+      meta: { title: '会员' }
     }
   ]
 }

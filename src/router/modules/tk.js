@@ -15,13 +15,13 @@ const tkRouter = {
       path: 'type',
       component: () => import('@/views/tk/type'),
       name: 'tk_type',
-      meta: { title: '题型管理' }
+      meta: { title: '题型' }
     },
     {
       path: 'knowledge_points',
       component: () => import('@/views/tk/knowledge_points'),
       name: 'knowledge_points',
-      meta: { title: '知识点管理' }
+      meta: { title: '知识点' }
     },
     {
       path: 'difficult',
@@ -33,7 +33,7 @@ const tkRouter = {
       path: 'list',
       component: () => import('@/views/tk/index'),
       name: 'tk_list',
-      meta: { title: '题目管理' }
+      meta: { title: '题目' }
     }
   ]
 }
